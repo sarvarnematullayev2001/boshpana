@@ -15,9 +15,7 @@ conn = psycopg2.connect(
     port=os.environ.get("POSTGRES_PORT")
 )
 
-# Initializing bot and dispatcher
-API_TOKEN = '5768592838:AAF9xzzk6vF4y6RJoKfyTmciOyi6NgFaCdw'
-bot = Bot(token=API_TOKEN)
+bot = Bot(token=os.environ.get("API_TOKEN"))
 dp = Dispatcher(bot)
 
 @dp.message_handler(commands=['start',])
@@ -51,7 +49,7 @@ async def send_ads(message: types.Message):
             # Ad detail
             for ad in ads:
                 
-                # Getting url of each ad
+                # Getting url of each ad 
                 ad_url = "https://www.olx.uz" + ad.find_parent('a')['href']
                 ad_request = requests.get(ad_url).text
                 ad_soup = BeautifulSoup(ad_request, "lxml")
@@ -97,7 +95,7 @@ async def send_ads(message: types.Message):
                         # if the length of caption is more than 880(we must add anchor tags which redirects to detail of add,
                         # that's why i am taking 880 character. If we add anchor tag also length might be longer than 1024) character
                         if len(images[-1].caption) >= 880:
-                            images[-1].caption = images[-1].caption.replace(images[-1].caption[880-len(images[-1].caption):], '...\n')
+                            images[-1].caption = images[-1].caption.replace(images[-1].caption[880-len(images[-1].caption):], '...\n\n')
                         images[-1].caption += f"<a href='{ad_url}'>Batafsil ma'lumot</a>"
                                             
                         # Telegram does not allow us to send each ad per second, so I need to sleep program for some time
